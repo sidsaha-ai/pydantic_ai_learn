@@ -1,0 +1,7 @@
+ipython
+pip-tools
+pylint
+pandas
+numpy
+pytest
+pydantic-ai
