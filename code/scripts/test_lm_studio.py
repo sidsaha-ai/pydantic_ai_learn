@@ -1,8 +1,6 @@
-from openai import AsyncOpenAI
 from pydantic_ai import Agent
-from pydantic_ai.models.openai import OpenAIModel
-
 from utils import llm_model
+
 
 def main():
     model = llm_model.fetch_model()
