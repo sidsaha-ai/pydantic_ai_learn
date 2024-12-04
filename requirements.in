@@ -1,0 +1,9 @@
+ipython
+pip-tools
+pylint
+isort
+flake8
+pandas
+numpy
+pytest
+pydantic-ai
