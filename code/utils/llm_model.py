@@ -13,6 +13,7 @@ def _base_url() -> str:
     """
     return 'http://localhost:1234/v1'
 
+
 def _api_key() -> str:
     """
     Returns the API Key.
@@ -22,11 +23,11 @@ def _api_key() -> str:
 
 def _fetch_model_name() -> str:
     url: str = f'{_base_url()}/models'
-    
-    r = requests.get(url)
+
+    r = requests.get(url, timeout=10)
     if not r.ok:
         raise Exception(f'Request to fetch model names failed: {r.content}')
-    
+
     c = r.json()
     return c.get('data', []) and c.get('data', [])[0].get('id', None) or None
 
