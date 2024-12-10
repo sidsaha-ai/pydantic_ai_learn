@@ -11,7 +11,7 @@ def main():
     """
     m = LLMModel()
     m.model_type = 'ollama'
-    m.ollama_model_name = 'llama3.2:3b'
+    m.ollama_model_name = 'llama3.1:8b'
 
     model = m.fetch_model()
     agent = Agent(
