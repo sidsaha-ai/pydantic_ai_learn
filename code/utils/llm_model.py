@@ -10,6 +10,9 @@ from pydantic_ai.models.openai import OpenAIModel
 
 
 class LLMModel:
+    """
+    An LLM Model class that returns a Pydantic LLM Model based on attributes.
+    """
     model_type: str
     ollama_model_name: str
 
@@ -37,14 +40,14 @@ class LLMModel:
             self._fetch_model_name(), openai_client=client,
         )
         return model
-    
+
     def fetch_ollama_model(self) -> OllamaModel:
         """
         Creates and returns a model for Ollama.
         """
         model = OllamaModel(self.ollama_model_name)
         return model
-    
+
     def fetch_model(self) -> Model:
         """
         Returns a model based on the parameters.
