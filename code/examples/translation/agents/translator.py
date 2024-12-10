@@ -4,7 +4,6 @@ This agent would translate the input string in a source language to another lang
 import argparse
 import asyncio
 from dataclasses import dataclass
-from typing import Literal
 
 import logfire
 from examples.translation.agents.language_detector import AgentMaker
@@ -22,10 +21,7 @@ class Deps:
 
 
 class Outputs(BaseModel):
-    # source_text: str
-    # source_lang: Literal['English', 'Hindi']
-    translated_text: str
-    # target_lang: Literal['English', 'Hindi']
+    translated_text: str = Field(description='The translated text result produced by the agent.')
 
 m = LLMModel()
 m.model_type = 'ollama'
@@ -39,7 +35,7 @@ agent = Agent(
     deps_type=Deps,
     system_prompt='You are a language translator. You job is to translate the given source text from \
         the source language to a target text in the target language. You should return the source text \
-            (which needs to be translated), the souce language, the target language, and the translated text.',
+            (which needs to be translated), the source language, the target language, and the translated text.',
     retries=3,
 )
 
@@ -58,7 +54,7 @@ async def main(input_text: str, target_lang: str) -> None:
 
     result = await agent.run(input_text, deps=deps)
 
-    print(result.data.translated_text)
+    print(result.data)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
