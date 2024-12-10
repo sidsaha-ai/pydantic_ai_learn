@@ -2,12 +2,12 @@
 This agent would detect the language of the input string.
 """
 import argparse
+import asyncio
 from dataclasses import dataclass
 
 from pydantic import BaseModel, Field
 from pydantic_ai import Agent
 from utils import llm_model
-import asyncio
 
 
 @dataclass
