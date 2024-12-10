@@ -9,6 +9,8 @@ from pydantic import BaseModel, Field
 from pydantic_ai import Agent
 from utils.llm_model import LLMModel
 
+import logfire
+logfire.configure()
 
 class Outputs(BaseModel):
     """
