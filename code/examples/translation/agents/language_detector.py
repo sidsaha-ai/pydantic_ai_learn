@@ -11,10 +11,24 @@ from utils.llm_model import LLMModel
 
 
 class Outputs(BaseModel):
-    language: Literal['English', 'Hindi', 'Arabic', 'Odia', 'French', 'German', 'Bengali'] = Field(description='The detected language of the input text.')
+    """
+    The outputs of the language detector agent.
+    """
+    language: Literal[
+        'English',
+        'Hindi',
+        'Arabic',
+        'Odia',
+        'French',
+        'German',
+        'Bengali',
+    ] = Field(description='The detected language of the input text.')
 
 
 class AgentMaker:
+    """
+    Class to make and return a language detector agent.
+    """
 
     @staticmethod
     def _fetch_system_prompt() -> str:
@@ -26,6 +40,9 @@ class AgentMaker:
 
     @staticmethod
     def make_agent() -> Agent:
+        """
+        Function to create and return the language detector agent.
+        """
         m = LLMModel()
         m.model_type = 'ollama'
         m.ollama_model_name = 'llama3.1:8b'
@@ -39,7 +56,11 @@ class AgentMaker:
         )
         return agent
 
+
 async def main(input_text):
+    """
+    The main function to test this agent.
+    """
     agent: Agent = AgentMaker.make_agent()
 
     result = await agent.run(input_text)
