@@ -6,7 +6,7 @@ import asyncio
 from dataclasses import dataclass
 
 import logfire
-from examples.translation.agents.language_detector import AgentMaker
+from examples.translation.agents import language_detector
 from pydantic import BaseModel, Field
 from pydantic_ai import Agent, RunContext
 from utils.llm_model import LLMModel
@@ -63,7 +63,7 @@ async def main(input_text: str, target_lang: str) -> None:
     The main function to execute.
     """
     deps = Deps(
-        lang_detector_agent=AgentMaker.make_agent(),
+        lang_detector_agent=language_detector.agent,
         target_lang=target_lang,
         source_text=input_text,
     )
