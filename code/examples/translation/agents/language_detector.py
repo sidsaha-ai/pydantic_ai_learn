@@ -12,6 +12,7 @@ from utils.llm_model import LLMModel
 
 logfire.configure()
 
+
 class Outputs(BaseModel):
     """
     The outputs of the language detector agent.

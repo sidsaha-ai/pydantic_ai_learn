@@ -13,15 +13,23 @@ from utils.llm_model import LLMModel
 
 logfire.configure()
 
+
 @dataclass
 class Deps:
+    """
+    The dependencies needed by this agent.
+    """
     lang_detector_agent: Agent
     target_lang: str
     source_text: str
 
 
 class Outputs(BaseModel):
+    """
+    The outputs produced by this agent.
+    """
     translated_text: str = Field(description='The translated text result produced by the agent.')
+
 
 m = LLMModel()
 m.model_type = 'ollama'
@@ -39,13 +47,21 @@ agent = Agent(
     retries=3,
 )
 
+
 @agent.system_prompt
 async def source_language(ctx: RunContext[Deps]) -> str:
+    """
+    Returns a dynamic system prompt for the agent based on the
+    result of the language detector.
+    """
     r = await ctx.deps.lang_detector_agent.run(ctx.deps.source_text)
     return f'You have to convert the text from {r.data.language} to {ctx.deps.target_lang}.'
 
 
 async def main(input_text: str, target_lang: str) -> None:
+    """
+    The main function to execute.
+    """
     deps = Deps(
         lang_detector_agent=AgentMaker.make_agent(),
         target_lang=target_lang,
