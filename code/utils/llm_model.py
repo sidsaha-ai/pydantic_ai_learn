@@ -5,6 +5,8 @@ This provides a function to fetch the LLM model to use.
 import requests
 from openai import AsyncOpenAI
 from pydantic_ai.models.openai import OpenAIModel
+from pydantic_ai.models.groq import GroqModel
+from groq import AsyncGroq
 
 
 def _base_url() -> str:
@@ -32,12 +34,21 @@ def _fetch_model_name() -> str:
     return c.get('data', []) and c.get('data', [])[0].get('id', None) or None
 
 
-def fetch_model() -> OpenAIModel:
+def old_fetch_model() -> OpenAIModel:
     """
     This returns an OpenAIModel.
     """
     client = AsyncOpenAI(base_url=_base_url(), api_key=_api_key())
     model = OpenAIModel(
         _fetch_model_name(), openai_client=client,
+    )
+    return model
+
+def fetch_model() -> GroqModel:
+    client = AsyncGroq(base_url=_base_url(), api_key=_api_key())
+    model_name = _fetch_model_name()
+    print(model_name)
+    model = GroqModel(
+        model_name, groq_client=client,
     )
     return model
