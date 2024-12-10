@@ -3,16 +3,15 @@ This agent would translate the input string in a source language to another lang
 """
 import argparse
 import asyncio
-
-from pydantic import BaseModel, Field
-from pydantic_ai import Agent, RunContext
-from utils.llm_model import LLMModel
 from dataclasses import dataclass
 from typing import Literal
 
-from examples.translation.agents.language_detector import AgentMaker
-
 import logfire
+from examples.translation.agents.language_detector import AgentMaker
+from pydantic import BaseModel, Field
+from pydantic_ai import Agent, RunContext
+from utils.llm_model import LLMModel
+
 logfire.configure()
 
 @dataclass
