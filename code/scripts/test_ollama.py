@@ -1,15 +1,19 @@
 """
-Sample file to try out using Pydantic Agent with LM Studio.
+Sample file to try out using Pydantic Agent with Ollama.
 """
 from pydantic_ai import Agent
-from utils import llm_model
+from utils.llm_model import LLMModel
 
 
 def main():
     """
     The main function to start execution.
     """
-    model = llm_model.fetch_model()
+    m = LLMModel()
+    m.model_type = 'ollama'
+    m.ollama_model_name = 'llama3.1:8b'
+
+    model = m.fetch_model()
     agent = Agent(
         model,
         system_prompt='Be concise, reply with only one sentence.',

@@ -6,7 +6,7 @@ isort:
 	isort code
 
 requirements:
-	pip-compile requirements.in
+	pip-compile --upgrade requirements.in
 
 install-requirements:
 	pip install --no-cache-dir -r requirements.txt
