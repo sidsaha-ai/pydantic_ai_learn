@@ -30,7 +30,7 @@ class DatabaseConn:
             return 'Sid Saha'
 
         return None
-    
+
     @classmethod
     async def customer_currency(cls, *, customer_id: int) -> str | None:
         """
@@ -38,7 +38,7 @@ class DatabaseConn:
         """
         if customer_id == 123:
             return 'Rs.'
-        
+
         return None
 
     @classmethod
@@ -78,6 +78,7 @@ class SupportResult(BaseModel):
         example=2,
     )
 
+
 def generate_json(model: BaseModel) -> str:
     """
     Generates a JSON schema example to pass to the LLM.
@@ -96,10 +97,10 @@ def generate_json(model: BaseModel) -> str:
 m = LLMModel()
 m.model_type = 'ollama'
 m.ollama_model_name = 'llama3.1:8b'
-model = m.fetch_model()
+llm_model = m.fetch_model()
 
 support_agent = Agent(
-    model,
+    llm_model,
     deps_type=SupportDependencies,
     # result_type=SupportResult,  # NOTE: this does not work, prompting works better.
     system_prompt=(
