@@ -3,14 +3,14 @@ An example agent for Bank Support.
 """
 import argparse
 import asyncio
+import json
 from dataclasses import dataclass
+from typing import Optional
 
 import logfire
 from pydantic import BaseModel, Field
 from pydantic_ai import Agent, RunContext
 from utils.llm_model import LLMModel
-import json
-from typing import Optional
 
 logfire.configure()
 
