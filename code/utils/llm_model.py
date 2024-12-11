@@ -49,7 +49,7 @@ class LLMModel:
         """
         model = OllamaModel(self.ollama_model_name)
         return model
-    
+
     def fetch_groq_model(self) -> GroqModel:
         """
         Creates and returns a GroqModel.
