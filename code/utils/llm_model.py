@@ -7,6 +7,7 @@ from openai import AsyncOpenAI
 from pydantic_ai.models import Model
 from pydantic_ai.models.ollama import OllamaModel
 from pydantic_ai.models.openai import OpenAIModel
+from pydantic_ai.models.groq import GroqModel
 
 
 class LLMModel:
@@ -15,6 +16,7 @@ class LLMModel:
     """
     model_type: str
     ollama_model_name: str
+    groq_model_name: str
 
     _lm_studio_base_url: str = 'http://localhost:1234/v1'
     _lm_studio_api_key: str = 'lm_studio'
@@ -47,6 +49,13 @@ class LLMModel:
         """
         model = OllamaModel(self.ollama_model_name)
         return model
+    
+    def fetch_groq_model(self) -> GroqModel:
+        """
+        Creates and returns a GroqModel.
+        """
+        model = GroqModel(self.groq_model_name)
+        return model
 
     def fetch_model(self) -> Model:
         """
@@ -57,3 +66,5 @@ class LLMModel:
                 return self.fetch_lm_studio_model()
             case 'ollama':
                 return self.fetch_ollama_model()
+            case 'groq':
+                return self.fetch_groq_model()

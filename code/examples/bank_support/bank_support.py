@@ -95,8 +95,15 @@ def generate_json(model: BaseModel) -> str:
 
 # create the agent
 m = LLMModel()
-m.model_type = 'ollama'
-m.ollama_model_name = 'llama3.1:8b'
+
+# for ollama
+# m.model_type = 'ollama'
+# m.ollama_model_name = 'llama3.1:8b'
+
+# for groq
+m.model_type = 'groq'
+m.groq_model_name = 'llama-3.3-70b-versatile'
+
 llm_model = m.fetch_model()
 
 support_agent = Agent(
