@@ -5,9 +5,9 @@ This provides a function to fetch the LLM model to use.
 import requests
 from openai import AsyncOpenAI
 from pydantic_ai.models import Model
+from pydantic_ai.models.groq import GroqModel
 from pydantic_ai.models.ollama import OllamaModel
 from pydantic_ai.models.openai import OpenAIModel
-from pydantic_ai.models.groq import GroqModel
 
 
 class LLMModel:
