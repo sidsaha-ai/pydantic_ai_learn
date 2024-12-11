@@ -9,6 +9,8 @@ import logfire
 from pydantic import BaseModel, Field
 from pydantic_ai import Agent, RunContext
 from utils.llm_model import LLMModel
+import json
+from typing import Optional
 
 logfire.configure()
 
@@ -27,6 +29,16 @@ class DatabaseConn:
         if customer_id == 123:
             return 'Sid Saha'
 
+        return None
+    
+    @classmethod
+    async def customer_currency(cls, *, customer_id: int) -> str | None:
+        """
+        Returns the customer's currency based on the customer ID.
+        """
+        if customer_id == 123:
+            return 'Rs.'
+        
         return None
 
     @classmethod
@@ -53,11 +65,31 @@ class SupportResult(BaseModel):
     """
     The data model produced by this agent.
     """
-    support_advice: str = Field(description='The support advice returned to the customer.')
-    block_card: bool = Field(description='Whether to block their card')
-    risk: int = Field(
-        description='Risk level of the query', ge=0, le=10,
+    support_advice: str = Field(
+        description='The support advice returned to the customer.',
+        example='This is the advice returned by the agent.',
     )
+    block_card: Optional[bool] = Field(
+        description='Whether to block their card',
+        example=False,
+    )
+    risk: Optional[int] = Field(
+        description='Risk level of the query', ge=0, le=10,
+        example=2,
+    )
+
+def generate_json(model: BaseModel) -> str:
+    """
+    Generates a JSON schema example to pass to the LLM.
+    """
+    schema = model.model_json_schema()
+    template = {}
+
+    for prop, details in schema.get('properties', {}).items():
+        eg = details.get('example')
+        template[prop] = eg
+
+    return json.dumps(template)
 
 
 # create the agent
@@ -69,11 +101,11 @@ model = m.fetch_model()
 support_agent = Agent(
     model,
     deps_type=SupportDependencies,
-    result_type=SupportResult,
+    # result_type=SupportResult,  # NOTE: this does not work, prompting works better.
     system_prompt=(
         'You are a support agent in our bank, provide the the customer '
         'some support advice as per their request and judge the risk level of their query. '
-        "Reply using the customer's name."
+        "When reporting the customer's balance, report using the customer's preferred currency. "
     ),
 )
 
@@ -88,6 +120,19 @@ async def add_customer_name(ctx: RunContext[SupportDependencies]) -> str:
     return f'The name of the customer is {customer_name}'
 
 
+@support_agent.system_prompt
+async def return_json() -> str:
+    """
+    Constructs the return type that the LLM should return.
+    """
+    prompt = (
+        f'Please return ONLY a JSON string like this example:  {generate_json(SupportResult)}. '
+        'If any field in the JSON is not applicable, return its value as `null`. '
+        "Make sure to include the customer's name in the final support_advice field. "
+    )
+    return prompt
+
+
 @support_agent.tool
 async def customer_balance(ctx: RunContext[SupportDependencies], include_pending: bool) -> str:
     """
@@ -100,6 +145,17 @@ async def customer_balance(ctx: RunContext[SupportDependencies], include_pending
     return f'{balance:.2f}'
 
 
+@support_agent.tool
+async def customer_preffered_currency(ctx: RunContext[SupportDependencies]) -> str:
+    """
+    Return's the customer's currency.
+    """
+    deps: SupportDependencies = ctx.deps
+    currency = await deps.db.customer_currency(customer_id=deps.customer_id)
+    print(f'======= Currency: {currency} ======')
+    return f'{currency}'
+
+
 async def main(input_text: str, customer_id: int) -> None:
     """
     The main function to execute.
@@ -109,9 +165,8 @@ async def main(input_text: str, customer_id: int) -> None:
     )
     result = await support_agent.run(input_text, deps=deps)
 
-    print(result.all_messages())
-    print()
-    print(result.data)
+    res = SupportResult.model_validate_json(result.data)
+    print(res)
 
 
 if __name__ == '__main__':
