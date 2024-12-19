@@ -59,6 +59,7 @@ if __name__ == '__main__':
         "मेंढक पानी से बाहर कूद गया और राजकुमारी की गोद में आ बैठा।",
         "قفز الضفدع خارج الماء وحط في حضن الأميرة.",
         "ব্যাঙটি পানির বাইরে লাফিয়ে পড়ল এবং রাজকুমারীর কোলে গিয়ে পড়ল।",
+        "Der Frosch sprang aus dem Wasser und landete auf dem Schoß der Prinzessin.",
     ]
     for t in input_texts:
         asyncio.run(
