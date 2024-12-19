@@ -8,7 +8,7 @@ from pydantic import BaseModel, Field
 from pydantic_ai import Agent
 from utils.llm_model import LLMModel
 
-logfire.configure()
+logfire.configure(console=False)
 
 
 class LanguageDetectorResult(BaseModel):
@@ -21,39 +21,33 @@ class LanguageDetectorResult(BaseModel):
     )
 
 
-def make_agent() -> Agent:
-    """
-    Makes the agent.
-    """
-    m = LLMModel()
-    m.model_type = 'groq'
-    m.groq_model_name = 'llama3-groq-70b-8192-tool-use-preview'
+m = LLMModel()
+m.model_type = 'groq'
+m.groq_model_name = 'llama3-groq-70b-8192-tool-use-preview'
 
-    llm_model = m.fetch_model()
+llm_model = m.fetch_model()
 
-    agent = Agent(
-        llm_model,
-        result_type=LanguageDetectorResult,
-        system_prompt=(
-            'You are a language detector.'
-            'Your only job is to detect the language of the text given to you and return the name of the language in English'
-            'You should ONLY output the language you detect and nothing else.'
-            'Example 1:'
-            'Input Text: I am doing well today. How are you?'
-            'Output: English'
-            'Example 2:'
-            'Input Text: आज मैं अच्छा हूँ। आप कैसे हैं?'
-            'Output: Hindi'
-        ),
-    )
-    return agent
+agent = Agent(
+    llm_model,
+    result_type=LanguageDetectorResult,
+    system_prompt=(
+        'You are a language detector.'
+        'Your only job is to detect the language of the text given to you and return the name of the language in English'
+        'You should ONLY output the language you detect and nothing else.'
+        'Example 1:'
+        'Input Text: I am doing well today. How are you?'
+        'Output: English'
+        'Example 2:'
+        'Input Text: आज मैं अच्छा हूँ। आप कैसे हैं?'
+        'Output: Hindi'
+    ),
+)
 
 
 async def main(input_text: str) -> None:
     """
     The main function to execute to test this agent.
     """
-    agent = make_agent()
     result = await agent.run(input_text)
     print(f'{input_text} : {result.data}')
 

@@ -9,7 +9,7 @@ from pydantic import BaseModel, Field
 from pydantic_ai import Agent, RunContext
 from utils.llm_model import LLMModel
 
-logfire.configure()
+logfire.configure(console=False)
 
 
 @dataclass
