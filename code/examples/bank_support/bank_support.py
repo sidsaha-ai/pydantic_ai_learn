@@ -37,7 +37,7 @@ class DatabaseConn:
         Returns the customer's currency based on the customer ID.
         """
         if customer_id == 123:
-            return '$'
+            return 'Rs.'
 
         return None
 
@@ -113,20 +113,19 @@ support_agent = Agent(
     system_prompt=(
         'You are a support agent in our bank, provide the the customer '
         'some support advice as per their request and judge the risk level of their query. '
+        'ALWAYS include the name of the customer in any support advice you provide.'
         "When reporting the customer's balance, report using the customer's preferred currency. "
-        "Reply using the customer's name"
     ),
 )
 
-
-@support_agent.system_prompt
-async def add_customer_name(ctx: RunContext[SupportDependencies]) -> str:
+@support_agent.tool
+async def customer_name(ctx: RunContext[SupportDependencies]) -> str:
     """
-    Fetches and returns the customer name.
+    Returns the customer's name.
     """
     deps: SupportDependencies = ctx.deps
     customer_name = await deps.db.customer_name(customer_id=deps.customer_id)
-    return f'The name of the customer is "{customer_name}". Always include the name of the customer in the reply.'
+    return f'{customer_name}'
 
 
 @support_agent.tool
