@@ -66,7 +66,8 @@ agent = Agent(
         'You are given an input text and the desired language to translate to. '
         'You can use a tool to detect the language of the input text. '
         'You can use another tool to translate the input text to the desired language. '
-        'Finally, you have to output the input text given to you, the language you detected of the input text, the desired language to translate to given to you, and the final output translated text. '
+        'Finally, you have to output the input text given to you, the language you detected of the input text, '
+        'the desired language to translate to given to you, and the final output translated text. '
     ),
 )
 
