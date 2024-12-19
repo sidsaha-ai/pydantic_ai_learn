@@ -1,64 +1,66 @@
 """
-This agent would detect the language of the input string.
+An agent to detect the language of the input text.
 """
-import argparse
 import asyncio
-from typing import Literal
 
 import logfire
 from pydantic import BaseModel, Field
 from pydantic_ai import Agent
 from utils.llm_model import LLMModel
 
-logfire.configure()
+logfire.configure(console=False)
 
 
-class Outputs(BaseModel):
+class LanguageDetectorResult(BaseModel):
     """
-    The outputs of the language detector agent.
+    The data model produced as the final result of this agent.
     """
-    language: Literal[
-        'English',
-        'Hindi',
-        'Arabic',
-        'Odia',
-        'French',
-        'German',
-        'Bengali',
-    ] = Field(description='The detected language of the input text.')
+    detected_language: str = Field(
+        description='The detected language in English of the input text given to the agent for detection.',
+        examples=['English', 'Hindi', 'Arabic'],
+    )
 
 
 m = LLMModel()
-m.model_type = 'ollama'
-m.ollama_model_name = 'llama3.1:8b'
+m.model_type = 'groq'
+m.groq_model_name = 'llama3-groq-70b-8192-tool-use-preview'
 
-model = m.fetch_model()
+llm_model = m.fetch_model()
 
 agent = Agent(
-    model,
-    result_type=Outputs,
-    system_prompt='You are a language detector. You need to detect the language of the \
-        text provided and returnthe detected language (in English). Respond wth ONLY the detected language.',
-    retries=3,
+    llm_model,
+    result_type=LanguageDetectorResult,
+    system_prompt=(
+        'You are a language detector.'
+        'Your only job is to detect the language of the text given to you and return the name of the language in English'
+        'You should ONLY output the language you detect and nothing else.'
+        'Example 1:'
+        'Input Text: I am doing well today. How are you?'
+        'Output: English'
+        'Example 2:'
+        'Input Text: आज मैं अच्छा हूँ। आप कैसे हैं?'
+        'Output: Hindi'
+    ),
 )
 
 
-async def main(input_text):
+async def main(input_text: str) -> None:
     """
-    The main function to test this agent.
+    The main function to execute to test this agent.
     """
     result = await agent.run(input_text)
-    print(f'Language Detected: {result.data.language}')
+    print(f'{input_text} : {result.data}')
 
 
-# test the agent
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
-    parser.add_argument(
-        '--input_text', type=str, required=True,
-    )
-    args = parser.parse_args()
-
-    asyncio.run(
-        main(args.input_text)
-    )
+    input_texts = [
+        "The frog jumped out of the water and landed on the princess's lap.",
+        "मेंढक पानी से बाहर कूद गया और राजकुमारी की गोद में आ बैठा।",
+        "قفز الضفدع خارج الماء وحط في حضن الأميرة.",
+        "ব্যাঙটি পানির বাইরে লাফিয়ে পড়ল এবং রাজকুমারীর কোলে গিয়ে পড়ল।",
+        "Der Frosch sprang aus dem Wasser und landete auf dem Schoß der Prinzessin.",
+    ]
+    for t in input_texts:
+        asyncio.run(
+            main(t),
+        )

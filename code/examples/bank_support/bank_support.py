@@ -3,7 +3,9 @@ An example agent for Bank Support.
 """
 import argparse
 import asyncio
+import json
 from dataclasses import dataclass
+from typing import Optional
 
 import logfire
 from pydantic import BaseModel, Field
@@ -26,6 +28,16 @@ class DatabaseConn:
         """
         if customer_id == 123:
             return 'Sid Saha'
+
+        return None
+
+    @classmethod
+    async def customer_currency(cls, *, customer_id: int) -> str | None:
+        """
+        Returns the customer's currency based on the customer ID.
+        """
+        if customer_id == 123:
+            return 'Rs.'
 
         return None
 
@@ -53,39 +65,68 @@ class SupportResult(BaseModel):
     """
     The data model produced by this agent.
     """
-    support_advice: str = Field(description='The support advice returned to the customer.')
-    block_card: bool = Field(description='Whether to block their card')
-    risk: int = Field(
-        description='Risk level of the query', ge=0, le=10,
+    support_advice: str = Field(
+        description='The support advice returned to the customer.',
+        example='This is the advice returned by the agent.',
     )
+    block_card: Optional[bool] = Field(
+        description='Whether to block their card',
+        example=False,
+    )
+    risk: Optional[int] = Field(
+        description='Risk level of the query', ge=0, le=10,
+        example=2,
+    )
+
+
+def generate_json(model: BaseModel) -> str:
+    """
+    Generates a JSON schema example to pass to the LLM.
+    """
+    schema = model.model_json_schema()
+    template = {}
+
+    for prop, details in schema.get('properties', {}).items():
+        eg = details.get('example')
+        template[prop] = eg
+
+    return json.dumps(template)
 
 
 # create the agent
 m = LLMModel()
-m.model_type = 'ollama'
-m.ollama_model_name = 'llama3.1:8b'
-model = m.fetch_model()
+
+# for ollama
+# m.model_type = 'ollama'
+# m.ollama_model_name = 'llama3.1:8b'
+
+# for groq
+m.model_type = 'groq'
+m.groq_model_name = 'llama3-groq-70b-8192-tool-use-preview'
+
+llm_model = m.fetch_model()
 
 support_agent = Agent(
-    model,
+    llm_model,
     deps_type=SupportDependencies,
     result_type=SupportResult,
     system_prompt=(
         'You are a support agent in our bank, provide the the customer '
         'some support advice as per their request and judge the risk level of their query. '
-        "Reply using the customer's name."
+        'ALWAYS include the name of the customer in any support advice you provide.'
+        "When reporting the customer's balance, report using the customer's preferred currency. "
     ),
 )
 
 
-@support_agent.system_prompt
-async def add_customer_name(ctx: RunContext[SupportDependencies]) -> str:
+@support_agent.tool
+async def customer_name(ctx: RunContext[SupportDependencies]) -> str:
     """
-    Fetches and returns the customer name.
+    Returns the customer's name.
     """
     deps: SupportDependencies = ctx.deps
-    customer_name = await deps.db.customer_name(customer_id=deps.customer_id)
-    return f'The name of the customer is {customer_name}'
+    cname = await deps.db.customer_name(customer_id=deps.customer_id)
+    return f'{cname}'
 
 
 @support_agent.tool
@@ -100,6 +141,16 @@ async def customer_balance(ctx: RunContext[SupportDependencies], include_pending
     return f'{balance:.2f}'
 
 
+@support_agent.tool
+async def customer_preffered_currency(ctx: RunContext[SupportDependencies]) -> str:
+    """
+    Return's the customer's currency.
+    """
+    deps: SupportDependencies = ctx.deps
+    currency = await deps.db.customer_currency(customer_id=deps.customer_id)
+    return f'{currency}'
+
+
 async def main(input_text: str, customer_id: int) -> None:
     """
     The main function to execute.
@@ -109,8 +160,6 @@ async def main(input_text: str, customer_id: int) -> None:
     )
     result = await support_agent.run(input_text, deps=deps)
 
-    print(result.all_messages())
-    print()
     print(result.data)
 
 
