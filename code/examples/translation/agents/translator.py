@@ -6,11 +6,13 @@ from dataclasses import dataclass
 from typing import Optional
 
 import logfire
+from examples.translation.agents.language_detector import \
+    LanguageDetectorResult
+from examples.translation.agents.language_detector import \
+    agent as language_detector_agent
 from pydantic import BaseModel, Field
 from pydantic_ai import Agent, RunContext
 from utils.llm_model import LLMModel
-
-from examples.translation.agents.language_detector import LanguageDetectorResult, agent as language_detector_agent
 
 logfire.configure()
 
