@@ -63,5 +63,5 @@ if __name__ == '__main__':
     ]
     for t in input_texts:
         asyncio.run(
-            main(t)
+            main(t),
         )
