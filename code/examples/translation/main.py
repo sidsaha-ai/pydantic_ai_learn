@@ -6,12 +6,16 @@ import asyncio
 from dataclasses import dataclass
 
 import logfire
+from examples.translation.agents.language_detector import \
+    LanguageDetectorResult
+from examples.translation.agents.language_detector import \
+    agent as detector_agent
+from examples.translation.agents.translator import (TranslatorDependencies,
+                                                    TranslatorResult)
+from examples.translation.agents.translator import agent as translator_agent
 from pydantic import BaseModel, Field
 from pydantic_ai import Agent, RunContext
 from utils.llm_model import LLMModel
-
-from examples.translation.agents.language_detector import LanguageDetectorResult, agent as detector_agent
-from examples.translation.agents.translator import TranslatorDependencies, TranslatorResult, agent as translator_agent
 
 logfire.configure(console=False)
 
