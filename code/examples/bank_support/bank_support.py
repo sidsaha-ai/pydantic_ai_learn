@@ -118,14 +118,15 @@ support_agent = Agent(
     ),
 )
 
+
 @support_agent.tool
 async def customer_name(ctx: RunContext[SupportDependencies]) -> str:
     """
     Returns the customer's name.
     """
     deps: SupportDependencies = ctx.deps
-    customer_name = await deps.db.customer_name(customer_id=deps.customer_id)
-    return f'{customer_name}'
+    cname = await deps.db.customer_name(customer_id=deps.customer_id)
+    return f'{cname}'
 
 
 @support_agent.tool

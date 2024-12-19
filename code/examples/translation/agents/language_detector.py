@@ -1,17 +1,15 @@
 """
 An agent to detect the language of the input text.
 """
-import argparse
 import asyncio
-from dataclasses import dataclass
-from typing import Optional
 
 import logfire
 from pydantic import BaseModel, Field
-from pydantic_ai import Agent, RunContext
+from pydantic_ai import Agent
 from utils.llm_model import LLMModel
 
 logfire.configure()
+
 
 class LanguageDetectorResult(BaseModel):
     """
@@ -21,6 +19,7 @@ class LanguageDetectorResult(BaseModel):
         description='The detected language in English of the input text given to the agent for detection.',
         examples=['English', 'Hindi', 'Arabic'],
     )
+
 
 # create the agent
 m = LLMModel()
@@ -44,6 +43,7 @@ agent = Agent(
         'Output: Hindi'
     )
 )
+
 
 async def main(input_text: str) -> None:
     """
