@@ -19,6 +19,7 @@ from utils.llm_model import LLMModel
 
 logfire.configure(console=False)
 
+
 @dataclass
 class LanguageTranslatorDeps:
     """
@@ -50,6 +51,7 @@ class LanguageTranslatorResult(BaseModel):
         examples=["मेंढक पानी से बाहर कूद गया और राजकुमारी की गोद में आ बैठा।"],
     )
 
+
 # create the agent
 m = LLMModel()
 m.model_type = 'groq'
@@ -70,6 +72,7 @@ agent = Agent(
         'the desired language to translate to given to you, and the final output translated text. '
     ),
 )
+
 
 @agent.tool
 async def detect_language(ctx: RunContext[LanguageTranslatorDeps], input_text: str) -> str:
@@ -126,4 +129,3 @@ if __name__ == '__main__':
     asyncio.run(
         main(text, desired_lang),
     )
-
