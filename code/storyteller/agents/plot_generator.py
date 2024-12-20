@@ -1,7 +1,6 @@
 """
 This is the Plot Generator agent that generates the high level plot of the story.
 """
-import asyncio
 from dataclasses import dataclass
 
 import logfire
@@ -58,6 +57,7 @@ agent = Agent(
         'The goal is to create a high-level plot that is engaging, realistic, and entertaining. '
     ),
 )
+
 
 @agent.system_prompt
 def theme_prompt(ctx: RunContext[Deps]) -> str:
