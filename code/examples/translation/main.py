@@ -126,6 +126,12 @@ if __name__ == '__main__':
     text: str = "The frog jumped out of the water and landed on the princess's lap."
     desired_lang: str = 'French'
 
+    text: str = 'Der Frosch sprang aus dem Wasser und landete auf dem Schoß der Prinzessin.'
+    desired_lang: str = 'English'
+
+    text: str =  "قفز الضفدع خارج الماء وحط في حضن الأميرة."
+    desired_lang: str = 'French'
+
     asyncio.run(
         main(text, desired_lang),
     )
