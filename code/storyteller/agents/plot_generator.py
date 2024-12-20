@@ -43,10 +43,18 @@ agent = Agent(
     system_prompt=(
         'You are on the plot generater of a story based on a given theme. '
         'Your job is to generate a high-level plot of the story. '
+
         'You should output the characters of the story. The number of characters in the story should be between 3 and 7. '
+        'Do not use generic names for the characters. Bring in more diversity in the type of characters.'
+
         'You should output the general setting where the story takes place, an inciting incident that would happen in the story, '
         'an action to the incident, a climax, and a resolution to the story. '
+        'Make sure that the general setting is a bit elaborate and has depth and is not too generic. Be creative.'
+        'The action to the incident and the climax could use twists to the plot to make it more entertaining'
+        'Also, the resolution to the story should be complex and not one-dimensional.'
+
         'Remember, your job is to only generate a high-level plot of the story.'
+        'Ensure that all the characters have a role in the story. '
         'The goal is to create a high-level plot that is engaging, realistic, and entertaining. '
     ),
 )
@@ -61,10 +69,10 @@ def theme_prompt(ctx: RunContext[Deps]) -> str:
 
 
 if __name__ == '__main__':
-    theme: str = 'murder mystery'
+    # theme: str = 'murder mystery'
     theme: str = 'romantic love story'
-    theme: str = 'thriller'
-    theme: str = 'drama'
+    # theme: str = 'thriller'
+    # theme: str = 'drama'
 
     res = agent.run_sync("Let's start!", deps=Deps(theme=theme))
     print(res.data)
