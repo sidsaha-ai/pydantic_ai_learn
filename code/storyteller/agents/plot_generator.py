@@ -73,13 +73,3 @@ def theme_prompt(ctx: RunContext[PlotDeps]) -> str:
     """
     deps: PlotDeps = ctx.deps
     return f'The theme of the story is a {deps.theme}'
-
-
-if __name__ == '__main__':
-    # theme: str = 'murder mystery'
-    theme: str = 'romantic love story'
-    # theme: str = 'thriller'
-    # theme: str = 'drama'
-
-    res = agent.run_sync("Let's start!", deps=PlotDeps(theme=theme))
-    print(res.data)
