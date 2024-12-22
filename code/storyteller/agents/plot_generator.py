@@ -8,18 +8,18 @@ from pydantic import BaseModel, Field
 from pydantic_ai import Agent, RunContext
 from utils.llm_model import LLMModel
 
-logfire.configure(console=False)
+logfire.configure(console=False, scrubbing=False)
 
 
 @dataclass
-class Deps:
+class PlotDeps:
     """
     The dependencies needed by this agent.
     """
-    theme: str  # the high level theme of the restaurant
+    theme: str  # the high level theme of the story
 
 
-class Result(BaseModel):
+class PlotResult(BaseModel):
     """
     The data model produced as the final result of this agent.
     """
@@ -37,8 +37,8 @@ m.groq_model_name = 'llama3-groq-70b-8192-tool-use-preview'
 
 agent = Agent(
     m.fetch_model(),
-    deps_type=Deps,
-    result_type=Result,
+    deps_type=PlotDeps,
+    result_type=PlotResult,
     system_prompt=(
         'You are on the plot generater of a story based on a given theme. '
         'Your job is to generate a high-level plot of the story. '
@@ -60,11 +60,11 @@ agent = Agent(
 
 
 @agent.system_prompt
-def theme_prompt(ctx: RunContext[Deps]) -> str:
+def theme_prompt(ctx: RunContext[PlotDeps]) -> str:
     """
     Add the theme as a system prompt.
     """
-    deps: Deps = ctx.deps
+    deps: PlotDeps = ctx.deps
     return f'The theme of the story is a {deps.theme}'
 
 
@@ -74,5 +74,5 @@ if __name__ == '__main__':
     # theme: str = 'thriller'
     # theme: str = 'drama'
 
-    res = agent.run_sync("Let's start!", deps=Deps(theme=theme))
+    res = agent.run_sync("Let's start!", deps=PlotDeps(theme=theme))
     print(res.data)

@@ -130,7 +130,7 @@ if __name__ == '__main__':
     desired_lang: str = 'English'
 
     text: str = "قفز الضفدع خارج الماء وحط في حضن الأميرة."
-    desired_lang: str = 'French'
+    desired_lang: str = 'English'
 
     asyncio.run(
         main(text, desired_lang),
