@@ -1,8 +1,12 @@
 """
 This is the main function that uses all the agents.
 """
-from storyteller.agents.plot_generator import agent as plot_generator_agent, PlotResult, PlotDeps
-from storyteller.agents.character_richness import agent as character_richness_agent, CharacterDeps
+from storyteller.agents.character_richness import CharacterDeps
+from storyteller.agents.character_richness import \
+    agent as character_richness_agent
+from storyteller.agents.plot_generator import PlotDeps, PlotResult
+from storyteller.agents.plot_generator import agent as plot_generator_agent
+
 
 def main():
     theme: str = 'a murder mystery'  # the theme of the story
