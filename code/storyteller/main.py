@@ -9,6 +9,9 @@ from storyteller.agents.plot_generator import agent as plot_generator_agent
 
 
 def main():
+    """
+    The main function that uses all the agents to generate a full-story.
+    """
     theme: str = 'a murder mystery'  # the theme of the story
 
     # generate the plot

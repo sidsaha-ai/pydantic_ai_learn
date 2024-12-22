@@ -12,6 +12,7 @@ from utils.llm_model import LLMModel
 
 logfire.configure(console=False, scrubbing=False)
 
+
 @dataclass
 class CharacterDeps:
     """
@@ -45,6 +46,7 @@ m = LLMModel()
 m.model_type = 'groq'
 m.groq_model_name = 'llama3-groq-70b-8192-tool-use-preview'
 
+# pylint: disable=line-too-long
 system_prompt: str = (
     'You are a character development agent responsible for adding depth and richness to the '
     'characters in a story. You will receive the list of characters and the overall plot of the '
@@ -52,15 +54,16 @@ system_prompt: str = (
     'of each character. These background and personality traits will be used in the detailed story.\n\n'
     'For each character, you should generate the following: \n'
     '1. **Name**: The name of the character. \n'
-    '2: **Background**: A brief history of the character, including their upbringing, family, education, and significant events in their life that shaped them.\n'
+    '2: **Background**: A brief history of the character, including their upbringing, family, education, and significant events in their life that shaped them.\n'  # NOQA: E501
     "3. **Personality**: Describe the character's core personality traits (e.g., introverted, optimistic, selfish, compassionate).\n"
     '4. **Motivations**: What does this character want most in the story? What are they striving for? What are their fears or desires?\n'
     '5. **Internal Conflict**: Does this character have any inner struggles or dilemmas that might influence their actions?\n'
-    '6. **External Conflict**: How do external forces (such as other characters, the environment, or situations) challenge this character and influence their decisions?\n'
-    "7. **Relationships**: What is the character's relationship with the other characters in the story? Are they allies, rivals, or indifferent to each other?\n\n"
-    'Remember, the goal is to add depth to each character so that they are more than just plot devices—they should feel like real, complex individuals whose actions make sense based on their backgrounds and personalities.\n\n'
-    'Use the information from the plot generator (which you will receive as context) to tailor your character development to fit the genre and tone of the story. Ensure that each character has a unique and interesting background and personality that adds value to the overall plot.\n\n'
+    '6. **External Conflict**: How do external forces (such as other characters, the environment, or situations) challenge this character and influence their decisions?\n'  # NOQA: E501
+    "7. **Relationships**: What is the character's relationship with the other characters in the story? Are they allies, rivals, or indifferent to each other?\n\n"  # NOQA: E501
+    'Remember, the goal is to add depth to each character so that they are more than just plot devices—they should feel like real, complex individuals whose actions make sense based on their backgrounds and personalities.\n\n'  # NOQA: E501
+    'Use the information from the plot generator (which you will receive as context) to tailor your character development to fit the genre and tone of the story. Ensure that each character has a unique and interesting background and personality that adds value to the overall plot.\n\n'  # NOQA: E501
 )
+# pylint: enable=line-too-long
 
 agent = Agent(
     m.fetch_model(),
@@ -68,6 +71,7 @@ agent = Agent(
     result_type=CharacterRichnessResult,
     system_prompt=system_prompt,
 )
+
 
 @agent.system_prompt
 def plot_prompt(ctx: RunContext[CharacterDeps]) -> str:
