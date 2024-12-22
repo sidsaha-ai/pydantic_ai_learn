@@ -3,12 +3,9 @@ This is the Plot Generator agent that generates the high level plot of the story
 """
 from dataclasses import dataclass
 
-import logfire
 from pydantic import BaseModel, Field
 from pydantic_ai import Agent, RunContext
 from utils.llm_model import LLMModel
-
-logfire.configure(console=False, scrubbing=False)
 
 
 @dataclass

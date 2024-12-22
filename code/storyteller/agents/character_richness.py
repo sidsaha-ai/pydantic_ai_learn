@@ -4,13 +4,10 @@ more detailed info about the character.
 """
 from dataclasses import dataclass
 
-import logfire
 from pydantic import BaseModel, Field
 from pydantic_ai import Agent, RunContext
 from storyteller.agents.plot_generator import PlotResult
 from utils.llm_model import LLMModel
-
-logfire.configure(console=False, scrubbing=False)
 
 
 @dataclass
@@ -105,6 +102,7 @@ def plot_prompt(ctx: RunContext[CharacterDeps]) -> str:
         f'4: **Action to the incident**: {deps.plot.action}\n'
         f'5: **Climax of the story**: {deps.plot.climax}\n'
         f'6: **Resolution of the climax**: {deps.plot.resolution}\n\n'
-        'Keep the plot in mind when working on your task to generate character traits.'
+        'Keep the plot in mind when working on your task to generate character traits. '
+        'Generate the background information for every character, do not miss any character given to you.'
     )
     return prompt
