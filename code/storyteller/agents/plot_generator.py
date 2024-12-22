@@ -30,6 +30,16 @@ class PlotResult(BaseModel):
     climax: str = Field(description='The climax of the plot.')
     resolution: str = Field(description='The resolution of the plot of the story.')
 
+    def __str__(self) -> str:
+        res: str = ''
+        res += f'**Characters**: {self.characters}\n'
+        res += f'**Setting**: {self.setting}\n'
+        res += f'**Inciting Incident**: {self.inciting_incident}\n'
+        res += f'**Action**: {self.action}\n'
+        res += f'**Climax**: {self.climax}\n'
+        res += f'**Resolution**: {self.resolution}\n'
+        return res
+
 
 m = LLMModel()
 m.model_type = 'groq'
